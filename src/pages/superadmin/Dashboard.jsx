@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import {
   addDoc,
@@ -38,6 +39,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export default function SuperAdminDashboard() {
+  const navigate = useNavigate();
   const [orgName, setOrgName] = useState("");
   const [orgDomain, setOrgDomain] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
@@ -82,6 +84,10 @@ export default function SuperAdminDashboard() {
       setLoading(false);
     }
   };
+
+  const viewOrganizations = () => {
+    navigate('/superadmin/organizations');
+  }
 
   return (
     <>
@@ -172,11 +178,11 @@ export default function SuperAdminDashboard() {
             {/* ADMINS CARD */}
             <Card>
               <CardHeader>
-                <CardTitle>Admins</CardTitle>
+                <CardTitle>Organizations</CardTitle>
               </CardHeader>
               <CardContent>
-                <p>Manage organization admins here.</p>
-                <Button className="mt-4">View Admins</Button>
+                <p>View organizations here.</p>
+                <Button onClick={viewOrganizations} className="mt-4">View Organizations</Button>
               </CardContent>
             </Card>
           </div>
