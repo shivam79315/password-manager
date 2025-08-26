@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import {
   addDoc,
-  collection,
   serverTimestamp,
+  collection,
 } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 
@@ -140,9 +140,9 @@ export default function SuperAdminDashboard() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="user-name">User Name</Label>
+                        <Label htmlFor="org-email">Organization Email</Label>
                         <Input
-                          id="user-name"
+                          id="org-email"
                           value={currentUser}
                           onChange={(e) => setCurrentUser(e.target.value)}
                           required
