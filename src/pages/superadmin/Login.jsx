@@ -31,7 +31,7 @@ export default function SuperAdminLogin() {
       if (hashedInput === data.password) {
         // Successful login: redirect to dashboard
         localStorage.setItem("isSuperAdmin", "true");
-        navigate("/superadmin/dashboard", { replace: true });
+        navigate("/sa/dashboard", { replace: true });
       } else {
         setError("Incorrect password.");
       }

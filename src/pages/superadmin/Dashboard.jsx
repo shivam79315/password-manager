@@ -1,208 +1,73 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
-import {
-  addDoc,
-  serverTimestamp,
-  collection,
-} from "firebase/firestore";
-import { db } from "@/firebase/firebase";
+import { useState, useEffect } from "react";
 
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from "@/components/ui/card";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
+import { useDispatch, useSelector } from "react-redux";
 import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
+  fetchOrganizations,
+  deleteOrganization,
+} from "@/features/superadmin/orgSlice";
 
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-} from "@/components/ui/alert-dialog";
+import AlertDialogComp from "@/components/superadmin/AlertDialogComp";
+import OrganizationsList from "@/components/superadmin/OrganizationsList";
+import AddOrganizationModal from "@/components/superadmin/AddOrganizationModal";
 
 export default function SuperAdminDashboard() {
-  const navigate = useNavigate();
-  const [orgName, setOrgName] = useState("");
-  const [orgDomain, setOrgDomain] = useState("");
-  const [logoUrl, setLogoUrl] = useState("");
-  const [currentUser, setCurrentUser] = useState("");
+  const dispatch = useDispatch();
+  const {
+    items: organizations,
+    loading,
+    error,
+  } = useSelector((state) => state.organizations);
 
-  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    dispatch(fetchOrganizations());
+  }, [dispatch]);
+
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleAddOrganization = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const orgId = uuidv4();
-
-    try {
-      await addDoc(collection(db, "organizations"), {
-        orgId,
-        orgName,
-        orgDomain,
-        logoUrl: logoUrl || null,
-        createdAt: serverTimestamp(),
-        isActive: "active",
-        createdBy: currentUser || "unknown",
-      });
-
-      // Reset form fields
-      setOrgName("");
-      setOrgDomain("");
-      setLogoUrl("");
-      setCurrentUser("");
-
-      setIsDialogOpen(false); 
-      setShowSuccessDialog(true); 
-
-      // Show success dialog
-      setShowSuccessDialog(true);
-    } catch (error) {
-      console.error("Error adding organization:", error);
-      alert("Failed to create organization.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const viewOrganizations = () => {
-    navigate('/superadmin/organizations');
-  }
-
   return (
     <>
-      <div className="min-h-screen bg-muted flex flex-col">
-        <header className="p-4 bg-white">
-          <h1 className="text-2xl my-4 text-center font-bold">
+      <div className="w-full flex justify-between flex-col h-full">
+        <div className="w-full flex justify-between p-8">
+          <h1 className="text-2xl font-bold mb-6 text-center">
             Super Admin Dashboard
           </h1>
-        </header>
-
-        <main className="flex-1 p-8 bg-white">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* ORG CARD */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Organizations</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>View, add, or manage organizations here.</p>
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button className="mt-4">Add Organization</Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Add Organization</DialogTitle>
-                      <DialogDescription>
-                        Enter details of the new organization.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <form onSubmit={handleAddOrganization} className="space-y-4">
-                      <div>
-                        <Label htmlFor="org-name">Organization Name</Label>
-                        <Input
-                          id="org-name"
-                          value={orgName}
-                          onChange={(e) => setOrgName(e.target.value)}
-                          required
-                          disabled={loading}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="org-domain">Organization Domain</Label>
-                        <Input
-                          id="org-domain"
-                          value={orgDomain}
-                          onChange={(e) => setOrgDomain(e.target.value)}
-                          required
-                          disabled={loading}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="org-email">Organization Email</Label>
-                        <Input
-                          id="org-email"
-                          value={currentUser}
-                          onChange={(e) => setCurrentUser(e.target.value)}
-                          required
-                          disabled={loading}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="logo-url">Logo URL (optional)</Label>
-                        <Input
-                          id="logo-url"
-                          value={logoUrl}
-                          onChange={(e) => setLogoUrl(e.target.value)}
-                          placeholder="https://example.com/logo.png"
-                          disabled={loading}
-                        />
-                      </div>
-                      <DialogFooter>
-                        <Button type="submit" disabled={loading}>
-                          {loading ? "Saving..." : "Save"}
-                        </Button>
-                        <DialogClose asChild>
-                          <Button variant="outline" type="button" disabled={loading}>
-                            Cancel
-                          </Button>
-                        </DialogClose>
-                      </DialogFooter>
-                    </form>
-                  </DialogContent>
-                </Dialog>
-              </CardContent>
-            </Card>
-
-            {/* ADMINS CARD */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Organizations</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>View organizations here.</p>
-                <Button onClick={viewOrganizations} className="mt-4">View Organizations</Button>
-              </CardContent>
-            </Card>
-          </div>
+          {/* Plus Button */}
+          <Button
+            size="icon"
+            className="rounded-full cursor-pointer"
+            onClick={() => setIsDialogOpen(true)}
+          >
+            <Plus className="h-5 w-5" />
+          </Button>
+        </div>
+        <main className="flex-1">
+          <OrganizationsList
+            organizations={organizations}
+            loading={loading}
+            error={error}
+            onDelete={(id) => dispatch(deleteOrganization(id))}
+          />
         </main>
       </div>
 
-      {/* Success Alert Dialog */}
-      <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Organization Added</AlertDialogTitle>
-            <AlertDialogDescription>
-              Your new organization has been successfully created.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <Button onClick={() => setShowSuccessDialog(false)}>OK</Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Modal */}
+      <AddOrganizationModal
+        isOpen={isDialogOpen}
+        setIsOpen={setIsDialogOpen}
+        onSuccess={() => {
+          dispatch(fetchOrganizations());
+          setShowSuccessDialog(true);
+        }}
+      />
+
+      <AlertDialogComp
+        showSuccessDialog={showSuccessDialog}
+        setShowSuccessDialog={setShowSuccessDialog}
+      />
     </>
   );
 }
