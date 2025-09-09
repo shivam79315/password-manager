@@ -7,11 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchOrganizations,
   deleteOrganization,
-} from "@/features/superadmin/orgSlice";
+} from "~/features/superadmin/orgSlice";
 
-import AlertDialogComp from "@/components/superadmin/AlertDialogComp";
-import OrganizationsList from "@/components/superadmin/OrganizationsList";
-import AddOrganizationModal from "@/components/superadmin/AddOrganizationModal";
+import AlertDialogComp from "~/components/superadmin/AlertDialogComp";
+import OrganizationsList from "~/components/superadmin/OrganizationsList";
+import AddOrganizationModal from "~/components/superadmin/AddOrganizationModal";
 
 export default function SuperAdminDashboard() {
   const dispatch = useDispatch();

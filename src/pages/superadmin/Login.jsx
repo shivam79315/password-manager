@@ -2,9 +2,9 @@ import { useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import CryptoJS from "crypto-js";
 import { db } from "../../firebase/firebase";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { useNavigate } from "react-router-dom";
 
 export default function SuperAdminLogin() {
