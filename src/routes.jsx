@@ -11,6 +11,7 @@ import { Provider } from "react-redux";
 import Dashboard from "./pages/organization/Front/Dashboard";
 
 // You can add more imports for other pages as needed
+
 const AppRoutes = () => (
   <>
     <BrowserRouter>
