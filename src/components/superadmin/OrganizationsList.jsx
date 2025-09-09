@@ -11,7 +11,7 @@ export default function OrganizationsList({
     <>
       <div className="w-full p-6">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 place-items-center gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 place-items-center gap-6">
             {[...Array(3)].map((_, i) => (
               <Skeleton key={i} className="h-[150px] w-full rounded-xl" />
             ))}
