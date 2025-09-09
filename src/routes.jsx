@@ -9,7 +9,6 @@ import { store } from "./store/store";
 import { Provider } from "react-redux";
 
 // You can add more imports for other pages as needed
-
 const AppRoutes = () => (
   <>
   <BrowserRouter>
