@@ -11,9 +11,9 @@ export default function OrganizationsList({
     <>
       <div className="w-full p-6">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(3)].map((_, i) => (
-              <Skeleton key={i} className="h-[150px] w-full rounded-xl" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="h-[220px] w-full rounded-xl" />
             ))}
           </div>
         ) : error ? (
@@ -21,7 +21,7 @@ export default function OrganizationsList({
         ) : organizations.length === 0 ? (
           <p className="text-center text-gray-500">No organizations found.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {organizations.map((org) => (
                 <OrgCard
                   key={org.orgId}

@@ -6,17 +6,17 @@ import { PanelLeft } from "lucide-react"
 
 import { useIsMobile } from "~/components/hooks/use-mobile"
 import { cn } from "~/components/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
+import { Button } from "~/components/ui/button"
+import { Input } from "~/components/ui/input"
+import { Separator } from "~/components/ui/separator"
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet"
-import { Skeleton } from "@/components/ui/skeleton"
+} from "~/components/ui/sheet"
+import { Skeleton } from "~/components/ui/skeleton"
 import {
   Tooltip,
   TooltipContent,
@@ -31,7 +31,7 @@ const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
-const SidebarContext = React.createContext(null)
+export const SidebarContext = React.createContext(null)
 
 function useSidebar() {
   const context = React.useContext(SidebarContext)

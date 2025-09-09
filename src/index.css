@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Enable dark variant */
 @custom-variant dark (&:is(.dark *));
 
@@ -30,7 +34,7 @@
   --accent-foreground: oklch(0.205 0 0);
 
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0); /* ✅ fixed contrast */
+  --destructive-foreground: oklch(0.985 0 0);
 
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
@@ -100,7 +104,7 @@
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-border: oklch(0.269 0 0 / 40%);
   --sidebar-ring: oklch(0.439 0 0);
 }
 
@@ -164,7 +168,6 @@
 @layer base {
   * {
     border-color: var(--border);
-    @apply outline-ring/50;
   }
 
   body {
@@ -183,5 +186,14 @@
 
   p {
     @apply font-normal text-foreground;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }

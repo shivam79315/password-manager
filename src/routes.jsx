@@ -10,7 +10,7 @@ import { store } from "./store/store";
 import { Provider } from "react-redux";
 import Dashboard from "./pages/organization/Front/Dashboard";
 
-// You can add more imports for other pages as needed
+const NotFound = () => <h1 className="text-center text-2xl mt-10">404 - Page Not Found</h1>;
 
 const AppRoutes = () => (
   <>
@@ -41,6 +41,8 @@ const AppRoutes = () => (
             </OrgProtectedRoute>
           }
         />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   </>
