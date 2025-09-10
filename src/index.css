@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Enable dark variant */
 @custom-variant dark (&:is(.dark *));
 
@@ -30,7 +34,7 @@
   --accent-foreground: oklch(0.205 0 0);
 
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0); /* ✅ fix contrast */
+  --destructive-foreground: oklch(0.985 0 0);
 
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
@@ -44,6 +48,7 @@
 
   --radius: 0.625rem;
 
+  /* Sidebar */
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -80,7 +85,7 @@
   --accent-foreground: oklch(0.985 0 0);
 
   --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.985 0 0); /* ✅ fix contrast */
+  --destructive-foreground: oklch(0.985 0 0);
 
   --border: oklch(0.269 0 0);
   --input: oklch(0.269 0 0);
@@ -92,13 +97,14 @@
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
 
+  /* Sidebar */
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-border: oklch(0.269 0 0 / 40%);
   --sidebar-ring: oklch(0.439 0 0);
 }
 
@@ -145,6 +151,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
+  /* Sidebar mapped */
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -161,7 +168,6 @@
 @layer base {
   * {
     border-color: var(--border);
-    @apply outline-ring/50;
   }
 
   body {
@@ -181,9 +187,13 @@
   p {
     @apply font-normal text-foreground;
   }
+}
 
-  button {
-    @apply bg-primary text-primary-foreground rounded-lg px-4 py-2 
-           hover:bg-primary/80 transition-colors;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }

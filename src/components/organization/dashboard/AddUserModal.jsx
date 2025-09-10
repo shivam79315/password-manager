@@ -1,3 +1,4 @@
+import * as React from "react"
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { addDoc, serverTimestamp, collection } from "firebase/firestore";
@@ -16,49 +17,42 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function AddOrganizationModal({ isOpen, setIsOpen, onSuccess }) {
-  const [orgName, setOrgName] = useState("");
-  const [desc, setDesc] = useState("");
-  const [logoUrl, setLogoUrl] = useState("");
+export default function AddUserModal() {
+  const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleAddOrganization = async (e) => {
+  const handleAddUser = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    const orgId = uuidv4();
+    const userId = uuidv4();
 
     try {
-      await addDoc(collection(db, "organizations"), {
-        orgId,
-        orgName,
-        desc,
+      await addDoc(collection(db, "users"), {
+        userId,
         email,
-        logoUrl: logoUrl || null,
+        name,
         createdAt: serverTimestamp(),
-        isActive: "active",
-        createdBy: email || "unknown",
       });
 
       // reset form
-      setOrgName("");
-      setDesc("");
-      setLogoUrl("");
       setEmail("");
+      setName("");
 
       setIsOpen(false);
-      if (onSuccess) onSuccess(); // callback to refresh or show success
     } catch (error) {
-      console.error("Error adding organization:", error);
-      alert("Failed to create organization.");
+      console.error("Error adding user:", error);
+      alert("Failed to create user.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Organization</DialogTitle>
@@ -120,5 +114,6 @@ export default function AddOrganizationModal({ isOpen, setIsOpen, onSuccess }) {
         </form>
       </DialogContent>
     </Dialog>
+    </>
   );
 }
