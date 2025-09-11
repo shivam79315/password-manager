@@ -7,12 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 
+import { saveOrganization } from "@/features/organization/organizationSlice";
+import { useDispatch } from "react-redux";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -28,21 +32,21 @@ export default function Login() {
 
       if (querySnapshot.empty) {
         setError("Account not found. Please register.");
+        console.log('Account not found')
       } else {
         const docData = querySnapshot.docs[0].data();
         const hashedPassword = CryptoJS.SHA256(password).toString();
-
+        console.log(docData)
         if (docData.password === hashedPassword) {
+          dispatch(saveOrganization({
+            orgId : docData.orgId,
+            orgEmail : docData.email
+          }));
+          console.log("Password matched")
           navigate("/org/dashboard");
-          localStorage.setItem(
-            "orgAuth",
-            JSON.stringify({
-              orgId: docData.orgId,
-              email: docData.email,
-            })
-          );
         } else {
           setError("Invalid password.");
+          console.log('Password not matched')
         }
       }
     } catch (err) {

@@ -1,13 +1,11 @@
-import * as React from "react"
-import { ChevronRight } from "lucide-react"
-
-import { SearchForm } from "./search-form";
-import { VersionSwitcher } from "./version-switcher"
+import * as React from "react";
+import { ChevronRight } from "lucide-react";
+import { VersionSwitcher } from "./version-switcher";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "~/components/ui/collapsible"
+} from "~/components/ui/collapsible";
 import {
   Sidebar,
   SidebarContent,
@@ -19,64 +17,52 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "~/components/ui/sidebar"
+} from "~/components/ui/sidebar";
 
-// This is sample data.
+// Sample data
 const data = {
-  versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
   navMain: [
     {
       title: "Getting Started",
       url: "#",
       items: [
-        {
-          title: "Installation",
-          url: "#",
-        },
-        {
-          title: "Project Structure",
-          url: "#",
-        },
+        { title: "Installation", url: "#" },
+        { title: "Project Structure", url: "#" },
       ],
     },
     {
       title: "Community",
       url: "#",
-      items: [
-        {
-          title: "Contribution Guide",
-          url: "#",
-        },
-      ],
+      items: [{ title: "Contribution Guide", url: "#" }],
     },
   ],
-}
+};
 
-export default function AppSidebar({
-  ...props
-}) {
+export default function AppSidebar({ isMobile = false, ...props }) {
   return (
-    <Sidebar {...props}>
+    <Sidebar {...props} className="w-64">
       <SidebarHeader>
-        <VersionSwitcher versions={data.versions} defaultVersion={data.versions[0]} />
-        <SearchForm />
+        <VersionSwitcher />
       </SidebarHeader>
-      <SidebarContent className="gap-0">
-        {/* We create a collapsible SidebarGroup for each parent. */}
+
+      <SidebarContent className={isMobile ? "gap-0 block" : "gap-0 block md:block"}>
         {data.navMain.map((item) => (
           <Collapsible
             key={item.title}
             title={item.title}
             defaultOpen
-            className="group/collapsible">
+            className="group/collapsible"
+          >
             <SidebarGroup>
               <SidebarGroupLabel
                 asChild
-                className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+                className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              >
                 <CollapsibleTrigger>
                   {item.title}{" "}
                   <ChevronRight
-                    className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                    className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90"
+                  />
                 </CollapsibleTrigger>
               </SidebarGroupLabel>
               <CollapsibleContent>
@@ -96,6 +82,7 @@ export default function AppSidebar({
           </Collapsible>
         ))}
       </SidebarContent>
+
       <SidebarRail />
     </Sidebar>
   );

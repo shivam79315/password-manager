@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Check, ChevronsUpDown, GalleryVerticalEnd } from "lucide-react"
+import { GalleryVerticalEnd } from "lucide-react"
 
 import {
   DropdownMenu,
@@ -12,12 +12,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar"
+import { useSelector } from "react-redux"
 
-export function VersionSwitcher({
-  versions,
-  defaultVersion
-}) {
-  const [selectedVersion, setSelectedVersion] = React.useState(defaultVersion)
+export function VersionSwitcher() {
+  const orgData = useSelector((state) => state.organization.orgData);
 
   return (
     <SidebarMenu>
@@ -32,20 +30,10 @@ export function VersionSwitcher({
                 <GalleryVerticalEnd className="size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
-                <span className="font-semibold">Documentation</span>
-                <span className="">v{selectedVersion}</span>
+                <span className="font-semibold">{orgData.orgEmail}</span>
               </div>
-              <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]" align="start">
-            {versions.map((version) => (
-              <DropdownMenuItem key={version} onSelect={() => setSelectedVersion(version)}>
-                v{version}{" "}
-                {version === selectedVersion && <Check className="ml-auto" />}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>

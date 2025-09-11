@@ -10,41 +10,43 @@ import { store } from "./store/store";
 import { Provider } from "react-redux";
 import Dashboard from "./pages/organization/Front/Dashboard";
 
-const NotFound = () => <h1 className="text-center text-2xl mt-10">404 - Page Not Found</h1>;
+const NotFound = () => (
+  <h1 className="text-center text-2xl mt-10">404 - Page Not Found</h1>
+);
 
 const AppRoutes = () => (
   <>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<OrgUserLogin />} />
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<OrgUserLogin />} />
 
-        {/* Admin routes */}
-        <Route path="/sa/login" element={<SuperAdminLogin />} />
-        <Route
-          path="/sa/dashboard"
-          element={
-            <ProtectedRoute>
-              <Provider store={store}>
+          {/* Admin routes */}
+          <Route path="/sa/login" element={<SuperAdminLogin />} />
+          <Route
+            path="/sa/dashboard"
+            element={
+              <ProtectedRoute>
                 <SuperAdminDashboard />
-              </Provider>
-            </ProtectedRoute>
-          }
-        />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Organization routes */}
-        <Route path="/org/auth" element={<Auth />} />
-        <Route
-          path="/org/dashboard"
-          element={
-            <OrgProtectedRoute>
-              <Dashboard />
-            </OrgProtectedRoute>
-          }
-        />
+          {/* Organization routes */}
+          <Route path="/org/auth" element={<Auth />} />
+          <Route
+            path="/org/dashboard"
+            element={
+              <OrgProtectedRoute>
+                <Dashboard />
+              </OrgProtectedRoute>
+            }
+          />
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   </>
 );
 

@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Plus } from "lucide-react";
+import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -58,6 +58,18 @@ const data = [
   },
   {
     id: "bhqecj4p",
+    amount: 721,
+    status: "failed",
+    email: "carmella@example.com",
+  },
+  {
+    id: "5kma53we",
+    amount: 874,
+    status: "success",
+    email: "Silas22@example.com",
+  },
+  {
+    id: "bhqecjsd",
     amount: 721,
     status: "failed",
     email: "carmella@example.com",
@@ -177,6 +189,11 @@ export default function UsersTable() {
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageSize: 5,
+      },
+    },
   });
 
   return (
@@ -266,28 +283,61 @@ export default function UsersTable() {
       </div>
 
       {/* ⏮ Pagination + Row Count */}
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="text-muted-foreground flex-1 text-sm">
+      <div className="flex items-center justify-between py-4">
+        {/* Selected rows info */}
+        <div className="text-muted-foreground text-sm">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+
+        {/* Pagination controls */}
+        <div className="flex items-center space-x-4">
+          {/* Page info */}
+          <span className="text-sm text-muted-foreground">
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </span>
+
+         <select
+            className="border rounded-md px-2 py-1 text-sm 
+                      bg-white text-gray-900 
+                      dark:bg-gray-800 dark:text-white"
+            value={table.getState().pagination.pageSize}
+            onChange={(e) => table.setPageSize(Number(e.target.value))}
           >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
+            {[5, 10, 20, 50].map((size) => (
+              <option
+                key={size}
+                value={size}
+                className="bg-white text-gray-900 dark"
+              >
+                Show {size}
+              </option>
+            ))}
+          </select>
+
+
+          {/* Navigation buttons */}
+          <div className="space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                table.previousPage();
+              }}
+              disabled={!table.getCanPreviousPage()}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              Next
+            </Button>
+          </div>
         </div>
       </div>
     </div>

@@ -9,7 +9,7 @@ export default function OrgProtectedRoute({ children }) {
 
   // optionally parse and check values
   const parsedAuth = JSON.parse(orgAuth);
-  if (!parsedAuth?.orgId || !parsedAuth?.email) {
+  if (!parsedAuth?.orgId || !parsedAuth?.orgEmail) {
     return <Navigate to="/org/auth" replace />;
   }
 
