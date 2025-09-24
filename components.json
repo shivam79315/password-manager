@@ -9,7 +9,8 @@
   "rsc": false,
   "tsx": false,
   "aliases": {
-    "utils": "~/lib/utils",
-    "components": "~/components"
+    "utils": "/src/components/lib",
+    "components": "/src/components",
+    "hooks": "/src/components"
   }
 }

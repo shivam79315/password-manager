@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { toast } from "sonner";
 import { SidebarContext } from "~/components/ui/sidebar";
 import AppSidebar from "~/components/organization/dashboard/AppSidebar";
 import { SidebarTrigger, SidebarProvider } from "~/components/ui/sidebar";
@@ -10,9 +11,11 @@ import { ModalForm } from "@/components/common/ModalForm";
 
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebase/firebase";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addOrgUser } from "@/features/organization/organizationSlice";
 
 function LayoutContent({ children }) {
+  const dispatch = useDispatch();
   const { state } = useContext(SidebarContext);
   const isCollapsed = state === "collapsed";
   const [modal, setModal] = useState(false);
@@ -20,24 +23,21 @@ function LayoutContent({ children }) {
   const isMobile = useIsMobile();
   const openForm = () => {
     setModal(true);
-    console.log("opened form");
   };
   const closeForm = () => setModal(false);
 
   const orgData = useSelector((state) => state.organization.orgData);
-  console.log(orgData)
 
-  async function addOrgUser(orgId, { name, email, role, password }) {
-    // You should hash the password before storing
-    const hashedPassword = password; // TODO: hash if required
-    await addDoc(collection(db, "organizations", orgData.orgId, "users"), {
-      name,
-      email,
-      role,
-      createdAt: serverTimestamp(),
-      password: hashedPassword,
-    });
-  }
+  const handleAddUser = async (data) => {
+    const orgId = orgData.orgId;
+    try {
+      await dispatch(addOrgUser({ orgId, userData: data })).unwrap();
+      toast.success("User added successfully 🚀");
+    } catch (err) {
+      toast.error("Failed to add user ❌");
+      console.log(err)
+    }
+  };
 
   return (
     <div className="flex min-h-screen w-full">
@@ -103,7 +103,7 @@ function LayoutContent({ children }) {
             isOpen={modal}
             onClose={closeForm}
             onSubmit={async (data) => {
-              await addOrgUser(orgData.orgId, data);
+              await handleAddUser(data);
               closeForm();
             }}
           />

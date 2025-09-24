@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -29,118 +29,85 @@ import {
   DropdownMenuSeparator,
   DropdownMenuCheckboxItem,
 } from "~/components/ui/dropdown-menu";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { fetchUsers } from "@/features/organization/organizationSlice";
+import { useDispatch, useSelector } from "react-redux";
 
-// ✅ Mock data
-const data = [
-  {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@example.com",
-  },
-  {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@example.com",
-  },
-  {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@example.com",
-  },
-  {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@example.com",
-  },
-  {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@example.com",
-  },
-  {
-    id: "5kma53we",
-    amount: 874,
-    status: "success",
-    email: "Silas22@example.com",
-  },
-  {
-    id: "bhqecjsd",
-    amount: 721,
-    status: "failed",
-    email: "carmella@example.com",
-  },
-];
-
-// ✅ Column definitions
 export const columns = [
   {
     id: "select",
     header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected()
-            ? true
-            : table.getIsSomePageRowsSelected()
-            ? "indeterminate"
-            : false
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
+      <div className="text-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected()
+              ? true
+              : table.getIsSomePageRowsSelected()
+              ? "indeterminate"
+              : false
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
     ),
-    cell: ({ row, table }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+    cell: ({ row }) => (
+      <div className="text-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "name",
+    header: () => <div className="text-center">Name</div>,
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <div className="text-center capitalize">{row.getValue("name")}</div>
     ),
   },
   {
     accessorKey: "email",
     header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Email
-        <ArrowUpDown />
-      </Button>
+      <div className="text-left">
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email <ArrowUpDown />
+        </Button>
+      </div>
     ),
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => (
+      <div className="text-left lowercase">{row.getValue("email")}</div>
+    ),
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
+    accessorKey: "role",
+    header: ({ column }) => (
+      <div className="text-center">
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Role
+        </Button>
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className="text-center lowercase">{row.getValue("role")}</div>
+    ),
   },
   {
     id: "actions",
+    header: () => <div className="text-center">Actions</div>,
     enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original;
-      return (
+    cell: ({ row }) => (
+      <div className="text-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
@@ -151,29 +118,40 @@ export const columns = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(row.original.id)}
             >
-              Copy payment ID
+              Copy ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>View user</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      );
-    },
+      </div>
+    ),
   },
 ];
 
 // ✅ Main table component
 export default function UsersTable() {
+  const dispatch = useDispatch();
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const { users, orgData, loading, error } = useSelector((state) => state.organization);
+
+  useEffect(() => {
+    if(orgData?.orgId) {
+      dispatch(fetchUsers(orgData.orgId));
+    }
+  }, [dispatch, orgData]);
+
+  if(loading) console.log('LOading users');
+
+  if(users) console.log(users);
   const table = useReactTable({
-    data,
+    data : users || [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -298,23 +276,21 @@ export default function UsersTable() {
             {table.getPageCount()}
           </span>
 
-         <select
-            className="border rounded-md px-2 py-1 text-sm 
-                      bg-white text-gray-900 
-                      dark:bg-gray-800 dark:text-white"
-            value={table.getState().pagination.pageSize}
-            onChange={(e) => table.setPageSize(Number(e.target.value))}
-          >
-            {[5, 10, 20, 50].map((size) => (
-              <option
-                key={size}
-                value={size}
-                className="bg-white text-gray-900 dark"
-              >
-                Show {size}
-              </option>
-            ))}
-          </select>
+         <Select
+            value={String(table.getState().pagination.pageSize)}
+            onValueChange={(value) => table.setPageSize(Number(value))}
+            >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Rows per page" />
+            </SelectTrigger>
+            <SelectContent>
+              {[5, 10, 20, 50].map((size) => (
+                <SelectItem key={size} value={String(size)}>
+                  Show {size}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
 
           {/* Navigation buttons */}
